@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/softtech-bitirme
+    username: postgres
+    password: 0000
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      show-sql: true
+      format-sql: true
+      hibernate:
+        globally_quoted_identifiers: true
