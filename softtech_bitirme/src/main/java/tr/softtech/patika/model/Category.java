@@ -18,13 +18,13 @@ import java.math.BigDecimal;
 @Setter
 @SuperBuilder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class CategoryKdv extends BaseEntity{
+public class Category extends BaseEntity{
 
     @Id
-    @Column(name = "categoryKdv_id")
+    @Column(name = "category_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String categoryKdvId;
+    private String categoryId;
 
     //TODO : yeni kategoriler eklemek gerekiyor ise enum kullanmak efektif değil gibi. Düşün bunu!!!!
     @Enumerated(EnumType.STRING)

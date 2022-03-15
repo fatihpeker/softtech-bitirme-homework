@@ -12,6 +12,7 @@ import tr.softtech.patika.service.ProductService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 @RestController
@@ -62,6 +63,12 @@ public class ProductController {
                 "Product taken by price and category"));
     }
 
+    @Operation(tags = "Get Summary")
+    @GetMapping("summary")
+    public ResponseEntity getSummaryByCategory(){
+        return ResponseEntity.ok(GenericResponseDto.of(productService.getSummary(),"Summary by category taken"));
+    }
+
     @Operation(tags = "Add New Product")
     @PostMapping
     public ResponseEntity addNewProduct(@Valid @RequestBody AddNewProductRequestDto addNewProductRequestDto){
@@ -83,7 +90,7 @@ public class ProductController {
 
     @Operation(tags = "Update Product Price")
     @PatchMapping("price")
-    public ResponseEntity updateProductPrice(@RequestParam String productId, @RequestParam @DecimalMin("0.0") BigDecimal price){
+    public ResponseEntity updateProductPrice(@RequestParam String productId, @RequestParam @DecimalMin("0.1") BigDecimal price){
         return ResponseEntity.ok(GenericResponseDto.of(productService.updateProductPrice(productId,price),"price updated successfully"));
     }
 
@@ -93,7 +100,10 @@ public class ProductController {
         return ResponseEntity.ok(GenericResponseDto.of(productService.updateProductStock(productId,stock),"product stock updated successfully"));
     }
 
-
-
+    @Operation(tags = "Update Kdv Rate")
+    @PatchMapping("kdvRate")
+    public ResponseEntity updateKdvRate(@RequestParam @NotBlank String categoryType,@RequestParam @DecimalMin("0.0") BigDecimal kdvRate){
+        return ResponseEntity.ok(GenericResponseDto.of(productService.updateKdvRate(categoryType,kdvRate),"kdv rate aupdated"));
+    }
 
 }

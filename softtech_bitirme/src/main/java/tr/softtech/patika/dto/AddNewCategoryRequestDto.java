@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 
 @Data
 public class AddNewCategoryRequestDto {
-    @NotBlank(message = "Category type cannot be blank")
     private CategoryEnum categoryType;
     @DecimalMin(value = "0.0",message = "kdv cannot be negative")
     private BigDecimal kdv_rate;

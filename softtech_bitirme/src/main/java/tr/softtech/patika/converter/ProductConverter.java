@@ -1,24 +1,35 @@
 package tr.softtech.patika.converter;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import tr.softtech.patika.dto.AddNewProductRequestDto;
 import tr.softtech.patika.dto.UpdateProductRequestDto;
 import tr.softtech.patika.model.Product;
-import tr.softtech.patika.service.CategoryKdvService;
+import tr.softtech.patika.service.CategoryService;
+import tr.softtech.patika.service.ProductService;
 
 @Service
 @RequiredArgsConstructor
 public class ProductConverter {
 
-    private final CategoryKdvService categoryKdvService;
+    private final CategoryService categoryService;
+
+    private  ProductService productService;
+
+    @Autowired
+    public ProductConverter(CategoryService categoryService, @Lazy ProductService productService) {
+        this.categoryService = categoryService;
+        this.productService = productService;
+    }
 
     public Product addNewProductRequestDtoToProduct(AddNewProductRequestDto addNewProductRequestDto){
         Product product = Product.builder()
                 .name(addNewProductRequestDto.getName())
                 .description(addNewProductRequestDto.getDescription())
                 .barcode(addNewProductRequestDto.getBarcode())
-                .categoryKdv(categoryKdvService.getCategoryKdvByCategoryType(addNewProductRequestDto.getCategoryKdvType()))
+                .category(categoryService.getCategoryByCategoryType(addNewProductRequestDto.getCategoryKdvType()))
                 .priceWithoutKdv(addNewProductRequestDto.getPriceWithoutKdv())
                 .stock(addNewProductRequestDto.getStock())
                 .build();
@@ -30,11 +41,11 @@ public class ProductConverter {
                 .productId(updateProductRequestDto.getProductId())
                 .name(updateProductRequestDto.getName())
                 .description(updateProductRequestDto.getDescription())
-                .categoryKdv(categoryKdvService.getCategoryKdvByCategoryType(updateProductRequestDto.getCategoryKdvType()))
+                .category(categoryService.getCategoryByCategoryType(updateProductRequestDto.getCategoryKdvType()))
                 .priceWithoutKdv(updateProductRequestDto.getPriceWithoutKdv())
-                .priceWithKdv(categoryKdvService.calculetPriceWithKdv(
+                .priceWithKdv(productService.calculetPriceWithKdv(
                         updateProductRequestDto.getPriceWithoutKdv(),
-                        categoryKdvService.getCategoryKdvByCategoryType(updateProductRequestDto.getCategoryKdvType())
+                        categoryService.getCategoryByCategoryType(updateProductRequestDto.getCategoryKdvType())
                 ))
                 .stock(updateProductRequestDto.getStock())
                 .build();

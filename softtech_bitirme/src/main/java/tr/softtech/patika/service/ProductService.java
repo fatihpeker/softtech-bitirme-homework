@@ -5,29 +5,32 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import tr.softtech.patika.converter.ProductConverter;
 import tr.softtech.patika.converter.ProductMapper;
-import tr.softtech.patika.dto.AddNewProductRequestDto;
-import tr.softtech.patika.dto.ProductDto;
-import tr.softtech.patika.dto.UpdateProductRequestDto;
+import tr.softtech.patika.dto.*;
 import tr.softtech.patika.exception.ItemAlreadyExistException;
 import tr.softtech.patika.exception.ItemNotFoundException;
-import tr.softtech.patika.model.CategoryKdv;
+import tr.softtech.patika.model.Category;
 import tr.softtech.patika.model.Product;
 import tr.softtech.patika.repository.ProductRepository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ProductService {
 
     private final ProductRepository productRepository;
 
     private final ProductConverter productConverter;
 
-    private final CategoryKdvService categoryKdvService;
+    private final CategoryService categoryService;
 
     private final BaseEntityFieldService baseEntityFieldService;
 
@@ -36,7 +39,7 @@ public class ProductService {
             throw new ItemAlreadyExistException("Product already exist");
         }
         Product product = productConverter.addNewProductRequestDtoToProduct(addNewProductRequestDto);
-        product.setPriceWithKdv(categoryKdvService.calculetPriceWithKdv(product.getPriceWithoutKdv(),product.getCategoryKdv()));
+        product.setPriceWithKdv(calculetPriceWithKdv(product.getPriceWithoutKdv(),product.getCategory()));
         baseEntityFieldService.addBaseEntityProperties(product);
         return ProductMapper.INSTANCE.productToProductDto(productRepository.save(product));
     }
@@ -68,7 +71,7 @@ public class ProductService {
         }
         Product product = productRepository.getById(productId);
         product.setPriceWithoutKdv(price);
-        product.setPriceWithKdv(categoryKdvService.calculetPriceWithKdv(price,product.getCategoryKdv()));
+        product.setPriceWithKdv(calculetPriceWithKdv(price,product.getCategory()));
         baseEntityFieldService.addBaseEntityProperties(product);
         return ProductMapper.INSTANCE.productToProductDto(productRepository.save(product));
     }
@@ -91,9 +94,9 @@ public class ProductService {
     }
 
     public Page getAllProductByCategory(int pageNumber, int pageSize, String categoryType){
-        CategoryKdv categoryKdv = categoryKdvService.getCategoryKdvByCategoryType(categoryType);
+        Category category = categoryService.getCategoryByCategoryType(categoryType);
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Product> page = productRepository.findAllByCategoryKdv(pageable,categoryKdv);
+        Page<Product> page = productRepository.findAllByCategory(pageable, category);
         Page<ProductDto> dtoPage = page.map(ProductMapper.INSTANCE::productToProductDto);
         return dtoPage;
     }
@@ -106,11 +109,44 @@ public class ProductService {
     }
 
     public Page getAllProductByPriceAndCategory(int pageNumber, int pageSize, String categoryType, BigDecimal minPrice, BigDecimal macPrice){
-        CategoryKdv categoryKdv = categoryKdvService.getCategoryKdvByCategoryType(categoryType);
+        Category category = categoryService.getCategoryByCategoryType(categoryType);
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<Product> page = productRepository.findAllByCategoryKdvAndPriceWithKdvBetween(pageable,categoryKdv,minPrice,macPrice);
+        Page<Product> page = productRepository.findAllByCategoryAndPriceWithKdvBetween(pageable, category,minPrice,macPrice);
         Page<ProductDto> dtoPage = page.map(ProductMapper.INSTANCE::productToProductDto);
         return dtoPage;
+    }
+
+    public List<SummaryDto> getSummary(){
+        List<SummaryDto> summaryDtoList = new ArrayList<>();
+        List<Category> categoryList = categoryService.getAllCategory();
+        for (Category category : categoryList){
+            SummaryDto summaryDto = SummaryDto.builder()
+                    .categoryType(category.getCategoryType().name())
+                    .kdvRate(category.getKdv_rate())
+                    .minPrice(productRepository.getMinValueByCategory(category))
+                    .maxPrice(productRepository.getMaxValueByCategory(category))
+                    .avaragePrice(productRepository.getAvarageForPrice(category))
+                    .Stock(productRepository.getStockSumCategory(category))
+                    .build();
+            summaryDtoList.add(summaryDto);
+        }
+        return summaryDtoList;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CategoryDto updateKdvRate( String categoryType,BigDecimal kdvRate){
+       CategoryDto categoryDto = categoryService.updateKdvRate(categoryType,kdvRate);
+       List<Product> productList = productRepository.findAllByCategory(categoryService.getCategoryByCategoryType(categoryType));
+       for (Product product : productList){
+           product.setPriceWithKdv(calculetPriceWithKdv(product.getPriceWithoutKdv(),categoryService.getCategoryByCategoryType(categoryType)));
+       }
+       return categoryDto;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public BigDecimal calculetPriceWithKdv(BigDecimal priceWithoutKdv, Category category){
+        BigDecimal priceWithKdv = priceWithoutKdv.add(priceWithoutKdv.multiply(category.getKdv_rate()));
+        return priceWithKdv;
     }
 
 

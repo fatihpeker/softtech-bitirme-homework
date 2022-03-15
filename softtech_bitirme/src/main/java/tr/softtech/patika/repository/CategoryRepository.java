@@ -2,14 +2,14 @@ package tr.softtech.patika.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import tr.softtech.patika.enums.CategoryEnum;
-import tr.softtech.patika.model.CategoryKdv;
+import tr.softtech.patika.model.Category;
 
 import java.util.Optional;
 
-public interface CategoryKdvRepository extends JpaRepository<CategoryKdv,String> {
+public interface CategoryRepository extends JpaRepository<Category,String> {
 
     boolean existsByCategoryType(CategoryEnum categoryEnum);
 
-    Optional<CategoryKdv> findByCategoryType(CategoryEnum categoryType);
+    Optional<Category> findByCategoryType(CategoryEnum categoryType);
 
 }

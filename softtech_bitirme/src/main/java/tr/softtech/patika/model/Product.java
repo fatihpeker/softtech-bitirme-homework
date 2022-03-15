@@ -38,8 +38,8 @@ public class Product extends BaseEntity{
     private String barcode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryKdv_id",referencedColumnName = "categoryKdv_id")
-    private CategoryKdv categoryKdv;
+    @JoinColumn(name = "category_id",referencedColumnName = "category_id")
+    private Category category;
 
     @DecimalMin(value = "0.0")
     @Column(name = "price_without_kdv",nullable = false,precision = 19,scale = 3)
