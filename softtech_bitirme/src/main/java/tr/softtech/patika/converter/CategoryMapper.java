@@ -7,7 +7,7 @@ import tr.softtech.patika.dto.AddNewCategoryRequestDto;
 import tr.softtech.patika.dto.CategoryDto;
 import tr.softtech.patika.model.Category;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,componentModel = "spring")
 public interface CategoryMapper {
 
     CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);

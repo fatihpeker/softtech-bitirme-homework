@@ -1,5 +1,6 @@
 package tr.softtech.patika.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,6 +12,7 @@ import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Data
+@Builder
 public class UserDto {
     private String userId;
     private String username;

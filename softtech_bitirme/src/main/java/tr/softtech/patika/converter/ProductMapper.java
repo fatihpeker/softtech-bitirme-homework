@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import tr.softtech.patika.dto.ProductDto;
 import tr.softtech.patika.model.Product;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,componentModel = "spring")
 public interface ProductMapper {
 
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);

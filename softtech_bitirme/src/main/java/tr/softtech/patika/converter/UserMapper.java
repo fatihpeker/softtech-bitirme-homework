@@ -7,7 +7,7 @@ import tr.softtech.patika.dto.SingupRequestDto;
 import tr.softtech.patika.dto.UserDto;
 import tr.softtech.patika.model.User;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,componentModel = "spring")
 public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
