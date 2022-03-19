@@ -141,6 +141,7 @@ public class ProductService {
        for (Product product : productList){
            product.setPriceWithKdv(calculetPriceWithKdv(product.getPriceWithoutKdv(),categoryService.getCategoryByCategoryType(categoryType)));
        }
+       productRepository.saveAll(productList);
        return categoryDto;
     }
 
