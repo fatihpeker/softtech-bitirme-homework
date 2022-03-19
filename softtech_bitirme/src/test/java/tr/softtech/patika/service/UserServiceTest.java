@@ -42,9 +42,6 @@ class UserServiceTest {
     }
 
 
-
-
-
     @Test
     public void testGetUser_whenUsernameNotExist_shouldThrowItemNotFoundException(){
         String username = "anonymousUser";
@@ -146,7 +143,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void testUpdateUserNamePassword_whenUsernameIsOk_shouldReturnUserDto(){
+    public void testUpdateUserNamePassword_whenUsernameIsValid_shouldReturnUserDto(){
         UpdateUsernamePasswordRequestDto updateUsernamePasswordRequestDto = UpdateUsernamePasswordRequestDto.builder()
                 .username("username")
                 .password("password")

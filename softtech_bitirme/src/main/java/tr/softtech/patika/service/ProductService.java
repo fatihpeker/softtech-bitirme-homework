@@ -53,7 +53,8 @@ public class ProductService {
 
     public ProductDto updateProduct(UpdateProductRequestDto updateProductRequestDto){
         Product product = productConverter.updateProductRequestDtoToProduct(updateProductRequestDto);
-        Product productFromRepository = productRepository.getById(updateProductRequestDto.getProductId());
+        Product productFromRepository = productRepository.findById(updateProductRequestDto.getProductId())
+                .orElseThrow(()-> new ItemNotFoundException("Product not found"));
         if (updateProductRequestDto.getBarcode()!=null){
             //Eğer barkod numarası eskisi ile aynı değil ve başka bir ürünün barkod numarasını gösteriyor ise hata fırlat
             if (isExistByBarcode(updateProductRequestDto.getBarcode()) && !Objects.equals(productFromRepository.getBarcode(), updateProductRequestDto.getBarcode())){
