@@ -30,9 +30,15 @@ public class CategoryService {
         if (existByCategory(addNewCategoryRequestDto.getCategoryType())){
             throw new ItemAlreadyExistException("This category already exist");
         }
-        Category category = CategoryMapper.INSTANCE.addNewCategoryRequestToCategoryKdv(addNewCategoryRequestDto);
+        Category category = CategoryMapper.INSTANCE.addNewCategoryRequestToCategory(addNewCategoryRequestDto);
         baseEntityFieldService.addBaseEntityProperties(category);
         return CategoryMapper.INSTANCE.categoryToCategoryDto(categoryRepository.save(category));
+    }
+
+    public void deleteCategory(String categoryId){
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(()->new ItemNotFoundException("Category Not Found"));
+        categoryRepository.delete(category);
     }
 
     public Category getCategoryByCategoryType(String categoryType){
@@ -53,7 +59,8 @@ public class CategoryService {
     public CategoryDto updateKdvRate(String categoryType, BigDecimal kdvRate){
         Category category = getCategoryByCategoryType(categoryType);
         category.setKdv_rate(kdvRate);
-        return CategoryMapper.INSTANCE.categoryToCategoryDto(category);
+        baseEntityFieldService.addBaseEntityProperties(category);
+        return CategoryMapper.INSTANCE.categoryToCategoryDto(categoryRepository.save(category));
     }
 
 }

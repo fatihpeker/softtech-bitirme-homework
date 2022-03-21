@@ -34,6 +34,5 @@ public class Category extends BaseEntity{
     @Column(name = "kdv_rate",precision = 19,scale = 3)
     private BigDecimal kdv_rate;
 
-//    @OneToMany(mappedBy = "categoryKdv",fetch = FetchType.LAZY)
-//    private Set<Product> productSet = new HashSet<>();
+
 }

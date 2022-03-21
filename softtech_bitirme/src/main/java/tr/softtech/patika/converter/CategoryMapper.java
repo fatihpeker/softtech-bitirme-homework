@@ -12,7 +12,7 @@ public interface CategoryMapper {
 
     CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
-    Category addNewCategoryRequestToCategoryKdv(AddNewCategoryRequestDto addNewCategoryRequestDto);
+    Category addNewCategoryRequestToCategory(AddNewCategoryRequestDto addNewCategoryRequestDto);
 
     CategoryDto categoryToCategoryDto(Category category);
 

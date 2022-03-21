@@ -26,6 +26,13 @@ public class CategoryController {
         return new ResponseEntity<>(GenericResponseDto.of(categoryService.addNewCategory(addNewCategoryRequestDto),"Category added"), HttpStatus.CREATED);
     }
 
+    @Operation(tags = "Delete Category")
+    @DeleteMapping
+    public ResponseEntity deleteCategory(@RequestParam String categoryId){
+        categoryService.deleteCategory(categoryId);
+        return ResponseEntity.ok(GenericResponseDto.of(Void.TYPE,"Category deleted successfully"));
+    }
+
 
 
 }
