@@ -96,7 +96,7 @@ public class ProductController {
 
     @Operation(tags = "Update Product Stock")
     @PatchMapping("stock")
-    public ResponseEntity updateProductStock(@RequestParam String productId, @RequestParam @DecimalMin("0.0") BigDecimal stock){
+    public ResponseEntity updateProductStock(@RequestParam String productId, @RequestParam @DecimalMin("0.1") BigDecimal stock){
         return ResponseEntity.ok(GenericResponseDto.of(productService.updateProductStock(productId,stock),"product stock updated successfully"));
     }
 
