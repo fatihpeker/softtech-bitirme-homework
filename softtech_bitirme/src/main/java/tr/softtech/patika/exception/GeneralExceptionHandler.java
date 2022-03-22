@@ -106,7 +106,7 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(value = {ItemAlreadyExistException.class})
-    public ResponseEntity<GenericResponseDto> handleFileAlreadyExistsException(ItemAlreadyExistException ex, WebRequest webRequest){
+    public ResponseEntity<GenericResponseDto> handleItemAlreadyExistsException(ItemAlreadyExistException ex, WebRequest webRequest){
         ErrorMessage errorMessage = ErrorMessage.builder()
                 .statusCode(HttpStatus.CONFLICT.value())
                 .timestamp(new Date())
